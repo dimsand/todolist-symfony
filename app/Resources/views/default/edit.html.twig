@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ form_stylesheet(form) }}
+{% endblock %}
+
+{% form_theme form 'bootstrap_3_layout.html.twig' %}
+
+{% block body %}
+    <h2>Edition de la tâche</h2>
+    <div class="row row-offcanvas row-offcanvas-right">
+
+        <div class="col-12 col-md-4">
+            <div class="list-group">
+                {% for task in tasks %}
+                    <a href="{{ path('edit_task', {'task_id': task.id}) }}"
+                            {% if task.id == task_id %}
+                        class="list-group-item list-group-item-action active"
+                    {% else %}
+                        class="list-group-item list-group-item-action"
+                            {% endif %}>
+                        <div class="row">
+                            {{ task.name }}
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div><!--/span-->
+
+        <div class="col-12 col-md-8">
+            <div class="card">
+                {% if form.delete is defined %}
+                    <div class="card-body">
+                        Etes-vous sûr de vouloir supprimer la tâche {{ form.vars.value.name }} ?
+                        {{ form_start(form) }}
+                        {{ form_widget(form) }}
+                        {{ form_end(form) }}
+                    </div>
+                {% else %}
+                    <div class="card-body">
+                        {{ form_start(form) }}
+                        {{ form_widget(form) }}
+                        {{ form_end(form) }}
+                    </div>
+                    <div class="card-body">
+                        <a href="{{ path('delete_task', {'task_id': task_id}) }}" class="btn btn-warning btn-sm active"
+                           role="button" aria-pressed="true">Supprimer la tâche</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div><!--/span-->
+    </div><!--/row-->
+{% endblock %}
+
+{% block javascripts %}
+    {{ form_javascript(form) }}
+{% endblock %}

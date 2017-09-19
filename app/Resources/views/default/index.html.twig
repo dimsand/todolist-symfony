@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>Mes tâches</h2>
+
+    <div class="card text" style="margin-top:15px;">
+        <div class="card-header">
+            <span style="font-size: 20px;">Todo list</span>
+            <a href="{{ path('add_task') }}" class="btn btn-primary active btn-sm" role="button" aria-pressed="true" style="float: right;">Ajouter une tâche</a>
+        </div>
+        <div class="card-body">
+            <div class="list-group">
+                {% for task in tasks %}
+                    <a href="{{ path('edit_task', {'task_id': task.id}) }}" class="list-group-item list-group-item-action">
+                        <div class="row">
+                            {{ task.name }}
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="card-footer text-muted">
+            {{ tasks|length }} tâches
+        </div>
+    </div>
+{% endblock %}
