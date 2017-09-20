@@ -3,7 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Task;
-use Symfony\Component\BrowserKit\Response;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 //use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -34,8 +34,14 @@ class DefaultController extends Controller
         $repository = $this->getDoctrine()->getRepository(Task::class);
         $tasks = $repository->findByUserId($user_id);
 
+        $query_tasks_done = $repository->createQueryBuilder('t')
+            ->where("t.done = 1")
+            ->getQuery();
+        $tasks_done = $query_tasks_done->getResult();
+
         return $this->render('default/index.html.twig', [
-            'tasks' => $tasks
+            'tasks' => $tasks,
+            'nb_tasks_non_done' => (count($tasks)-count($tasks_done))
         ]);
     }
 
@@ -193,5 +199,24 @@ class DefaultController extends Controller
             'task_id' => $task_id,
             'tasks' => $tasks
         ]);
+    }
+
+    public function ajaxTaskDoneAction(Request $request)
+    {
+        if ($request->isXmlHttpRequest())
+        {
+            $task_id = $request->get('task_id');
+            $is_done = $request->get('is_done');
+
+            if(is_null($task_id) || is_null($is_done)){
+                return false;
+            }
+
+            $em = $this->getDoctrine()->getEntityManager();
+            $task = $em->getRepository('AppBundle:Task')->find($task_id);
+            $task->setDone($is_done);
+            $em->flush();
+            return new Response('Ok');
+        }
     }
 }

@@ -1,5 +1,18 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    <style>
+        .task_done{
+            text-decoration:line-through;
+        }
+        .check_done{
+            height: 23px;
+            margin-right: 15px;
+            margin-left: 10px;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
     <h2>Mes tâches</h2>
 
@@ -13,14 +26,42 @@
                 {% for task in tasks %}
                     <a href="{{ path('edit_task', {'task_id': task.id}) }}" class="list-group-item list-group-item-action">
                         <div class="row">
-                            {{ task.name }}
+                            <input type="checkbox" class="check_done" rel="{{ task.id }}" {% if task.done == 1 %}checked{% endif %}>
+                            <span class="task_name {% if task.done == 1 %}task_done{% endif %}" rel="{{ task.id }}">{{ task.name }}</span>
                         </div>
                     </a>
                 {% endfor %}
             </div>
         </div>
         <div class="card-footer text-muted">
-            {{ tasks|length }} tâches
+            Total de {{ tasks|length }} tâche(s) dont <span id="nb_tasks_non_done">{{ nb_tasks_non_done }}</span> non terminée(s)
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).on('click', '.check_done', function(){
+            var task_id = $(this).attr('rel');
+            if( $(this).is(':checked') ){
+                var is_done = 1;
+            }else{
+                var is_done = 0;
+            }
+            $.ajax({
+                method: "POST",
+                url: "{{ path('done_task') }}",
+                data: { task_id: task_id, is_done: is_done }
+            })
+            .done(function( data ) {
+                if(is_done == 1){
+                    $('.task_name[rel="'+task_id+'"]').addClass('task_done');
+                    $('#nb_tasks_non_done').html(parseInt($('#nb_tasks_non_done').text()) - 1);
+                }else{
+                    $('.task_name[rel="'+task_id+'"]').removeClass('task_done');
+                    $('#nb_tasks_non_done').html(parseInt($('#nb_tasks_non_done').text()) + 1);
+                }
+            });
+        });
+    </script>
 {% endblock %}

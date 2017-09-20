@@ -81,6 +81,13 @@ class Task
     private $modified;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="done", type="boolean", nullable=true)
+     */
+    private $done;
+
+    /**
      * Task constructor.
      */
     public function __construct()
@@ -266,6 +273,22 @@ class Task
     public function getModified()
     {
         return $this->modified;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDone()
+    {
+        return $this->done;
+    }
+
+    /**
+     * @param bool $done
+     */
+    public function setDone($done)
+    {
+        $this->done = $done;
     }
 }
 

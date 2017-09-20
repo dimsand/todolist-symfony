@@ -22,6 +22,11 @@ delete_task:
     requirements:
         task_id: '\d+'
 
+done_task:
+    path:     /task/ajaxTaskDone
+    defaults: { _controller: AppBundle:Default:ajaxTaskDone }
+    methods: [post]
+
 tasks:
     path:     /tasks
     defaults: { _controller: AppBundle:Default:show }
