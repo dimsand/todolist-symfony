@@ -35,7 +35,7 @@ class DefaultController extends Controller
         $tasks = $repository->findByUserId($user_id);
 
         $query_tasks_done = $repository->createQueryBuilder('t')
-            ->where("t.done = 1")
+            ->where("t.done = 1 AND t.userId = ".$user_id)
             ->getQuery();
         $tasks_done = $query_tasks_done->getResult();
 

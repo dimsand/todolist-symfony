@@ -26,8 +26,11 @@
                 {% for task in tasks %}
                     <a href="{{ path('edit_task', {'task_id': task.id}) }}" class="list-group-item list-group-item-action">
                         <div class="row">
-                            <input type="checkbox" class="check_done" rel="{{ task.id }}" {% if task.done == 1 %}checked{% endif %}>
-                            <span class="task_name {% if task.done == 1 %}task_done{% endif %}" rel="{{ task.id }}">{{ task.name }}</span>
+                            <label class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input check_done" rel="{{ task.id }}" {% if task.done == 1 %}checked{% endif %}>
+                                <span class="custom-control-indicator"></span>
+                                <span class="custom-control-description task_name {% if task.done == 1 %}task_done{% endif %}" rel="{{ task.id }}">{{ task.name }}</span>
+                            </label>
                         </div>
                     </a>
                 {% endfor %}
